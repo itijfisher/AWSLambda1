@@ -16,7 +16,7 @@ $instanceId = (New-Object System.Net.WebClient).DownloadString("http://169.254.1
 
 # Associate current EC2 instance with your custom cloudwatch metric
 $instanceDimension = New-Object -TypeName Amazon.CloudWatch.Model.Dimension;
-$instanceDimension.Name = "instanceid";
+$instanceDimension.Name = "WAP-Test";
 $instanceDimension.Value = "i-05c3730370a2639fb";
 
     $metrics = @();
