@@ -7,17 +7,16 @@ $Namespace = 'Windows/PerfCounters'
 
 #Update the log path, use this for troubleshooting. 
 #$logpath = "C:\Temp\WApServicelog.txt"
-Set-DefaultAWSRegion -Region us-east-1
 
 #Use an AWS Service to get this systems Instance ID
-$instanceId = (New-Object System.Net.WebClient).DownloadString("http://169.254.169.254/latest/meta-data/instance-id")
+#$instanceId = (New-Object System.Net.WebClient).DownloadString("http://169.254.169.254/latest/meta-data/instance-id")
 #
-#$instanceId
+#$instanceId | Out-File -FilePath $logpath -Append
 
 # Associate current EC2 instance with your custom cloudwatch metric
 $instanceDimension = New-Object -TypeName Amazon.CloudWatch.Model.Dimension;
 $instanceDimension.Name = "instanceid";
-$instanceDimension.Value = "i-05c3730370a2639fb";
+$instanceDimension.Value = "WAP-Test";
 
     $metrics = @();
 
@@ -32,9 +31,11 @@ $instanceDimension.Value = "i-05c3730370a2639fb";
         $serviceDimension = New-Object -TypeName Amazon.CloudWatch.Model.Dimension;
         $serviceDimension.Name = "service"
         $serviceDimension.Value = $_.Name;
-		
-		$dimensions += $instanceDimension;
-		$dimensions += $serviceDimension;
+
+        Write-Output "SD = $($serviceDimension.Value)" 
+
+        $dimensions += $instanceDimension;
+        $dimensions += $serviceDimension;
 
         $metric = New-Object -TypeName Amazon.CloudWatch.Model.MetricDatum;
         $metric.Timestamp = [DateTime]::Utcnow;
@@ -42,12 +43,13 @@ $instanceDimension.Value = "i-05c3730370a2639fb";
         $metric.Value = 1;
         $metric.Dimensions = $dimensions;
 
-        $metrics += $metric;     
-		
-		Write-Output "SD = $($serviceDimension.Value)"
 
-		Write-Output "Service: $($_.Name) is running"		
-		
+        $metrics += $metric;    
+        
+        Write-Output "$metrics"
+
+        Write-Output "Service: $($_.Name) is running"
     }
 
-      Write-CWMetricData -Namespace $Namespace -MetricData $metrics -Verbose
+    # This cmdlet doesn't fail gracefully so we will run it in a try / catch. 
+    Write-CWMetricData -Namespace $Namespace -MetricData $metrics -Verbose
