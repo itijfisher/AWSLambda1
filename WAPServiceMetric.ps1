@@ -23,7 +23,7 @@ $instanceDimension.Value = "i-05c3730370a2639fb";
 
     #Adjust this to  pick up your service or services, this will work fine with multiple services. 
     $runningServices = Get-WMIObject Win32_Service -Computer WAP-Test | Where {$_.Name -eq "appproxysvc"} 
-    $runningServices
+    #$runningServices | Out-File -FilePath $logpath -Append
 
     # For each running service, add a metric to metrics collection that adds a data point to a CloudWatch Metric named 'Status' with dimensions: instanceid, servicename
         $runningServices | % { 
@@ -49,5 +49,10 @@ $instanceDimension.Value = "i-05c3730370a2639fb";
 		Write-Output "Service: $($_.Name) is running"		
 		
     }
-
-      Write-CWMetricData -Namespace $Namespace -MetricData $metrics -Verbose
+	
+    # This cmdlet doesn't fail gracefully so we will run it in a try / catch. 
+    try {
+    Write-CWMetricData -Namespace $Namespace -MetricData $metrics -Verbose
+    } catch {
+        Write-Output "CWMetric Failed" 
+    }
