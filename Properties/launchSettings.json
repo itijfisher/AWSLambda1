@@ -1,7 +1,0 @@
-{
-  "profiles": {
-    "AWSLambda1": {
-      "commandName": "Project"
-    }
-  }
-}
