@@ -1,7 +1,7 @@
 {
   "configuration": "Release",
   "framework": "netcoreapp3.1",
-  "function-handler": "not_required_for_custom_runtime",
+  "function-handler": "MyFunction::MyFunction.AWSLambda1::FunctionHandler",
   "function-memory-size": 256,
   "function-runtime": "provided",
   "function-timeout": 30,
