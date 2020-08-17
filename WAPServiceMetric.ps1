@@ -6,12 +6,12 @@ Set-DefaultAWSRegion -Region us-east-1
 $Namespace = 'Windows/PerfCounters'
 
 #Update the log path, use this for troubleshooting. 
-#$logpath = "C:\Temp\WApServicelog.txt"
+$logpath = "C:\Temp\WApServicelog.log"
 
 #Use an AWS Service to get this systems Instance ID
-#$instanceId = (New-Object System.Net.WebClient).DownloadString("http://169.254.169.254/latest/meta-data/instance-id")
+$instanceId = (New-Object System.Net.WebClient).DownloadString("http://169.254.169.254/latest/meta-data/instance-id")
 #
-#$instanceId | Out-File -FilePath $logpath -Append
+$instanceId | Out-File -FilePath $logpath -Append
 
 # Associate current EC2 instance with your custom cloudwatch metric
 $instanceDimension = New-Object -TypeName Amazon.CloudWatch.Model.Dimension;
@@ -22,7 +22,7 @@ $instanceDimension.Value = "WAP-Test";
 
     #Adjust this to  pick up your service or services, this will work fine with multiple services. 
     $runningServices = Get-WMIObject Win32_Service -Computer WAP-Test | Where {$_.Name -eq "appproxysvc"} 
-    #$runningServices | Out-File -FilePath $logpath -Append
+    $runningServices | Out-File -FilePath $logpath -Append
 
     # For each running service, add a metric to metrics collection that adds a data point to a CloudWatch Metric named 'Status' with dimensions: instanceid, servicename
         $runningServices | % { 
@@ -32,7 +32,7 @@ $instanceDimension.Value = "WAP-Test";
         $serviceDimension.Name = "service"
         $serviceDimension.Value = $_.Name;
 
-        Write-Output "SD = $($serviceDimension.Value)" 
+        Write-Output "SD = $($serviceDimension.Value)" | Out-File -FilePath $logpath -Append 
 
         $dimensions += $instanceDimension;
         $dimensions += $serviceDimension;
@@ -45,16 +45,15 @@ $instanceDimension.Value = "WAP-Test";
 
 
         $metrics += $metric;    
-        
-        Write-Output "$metrics"
 
-        Write-Output "Service: $($_.Name) is running"
+        Write-Output "Service: $($_.Name) is running" | Out-File -FilePath $logpath -Append
     }
 
     # This cmdlet doesn't fail gracefully so we will run it in a try / catch. 
     try {
     Write-CWMetricData -Namespace $Namespace -MetricData $metrics -Verbose
-    } catch {
-        Write-Output "CWMetric Failed" 
+    } catch { Write-Output "CWMetric Failed" | Out-File -FilePath $logpath -Append
+     Start-Sleep -s 03
+	exit #  
     }
     #
