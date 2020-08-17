@@ -3,7 +3,7 @@
     "configuration" : "Release",
     "environment-variables" : "",
     "framework"             : "netcoreapp3.1",
-    "function-handler"      : "MyFunction::AWSLambda2.MyFunction::FunctionHandler",
+    "function-handler"      : "AWSLambda2::AWSLambda2.MyFunction::FunctionHandler",
     "function-memory-size"  : 128,
     "function-name"         : "ITI-WAP-Test-ProxyService",
     "function-role"         : "arn:aws:iam::464133068626:role/ITI-WAP-Test-ProxyService",

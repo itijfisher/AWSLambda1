@@ -5,6 +5,13 @@ VisualStudioVersion = 16.0.30320.27
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AWSLambda2", "AWSLambda2\AWSLambda2.csproj", "{65BD089D-0300-47E9-92FC-1C5D3F38FC1B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EA23CDB4-F046-4C2A-B588-6642D92D85DB}"
+	ProjectSection(SolutionItems) = preProject
+		AWSLambda2\aws-lambda-tools-defaults.json = AWSLambda2\aws-lambda-tools-defaults.json
+		AWSLambda2.deps.json = AWSLambda2.deps.json
+		WAPServiceMetric.ps1 = WAPServiceMetric.ps1
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
